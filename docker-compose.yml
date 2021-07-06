@@ -1,8 +1,8 @@
 version: "3"
 
 services: 
-  api:
-    container_name: hetic-library_api
+  app:
+    container_name: hetic-library_app
     build:
       context: .
       dockerfile: .docker/app/dev.Dockerfile
@@ -10,5 +10,6 @@ services:
         - "./app:/app"
     ports:
       - 80:8080
+  
 
 
