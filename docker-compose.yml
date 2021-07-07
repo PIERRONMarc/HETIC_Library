@@ -12,24 +12,24 @@ services:
       - 80:8080
     networks: 
       - elastic
-  elasticsearch: 
-    container_name: hetic-library_elasticsearch
-    image: elasticsearch:7.13.2
-    environment:
-      - discovery.type=single-node
-    ports:
-      - 9200:9200
-    networks:
-      - elastic
-  kibana: 
-    container_name: hetic-library_kibana
-    image: kibana:7.13.2
-    environment:
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
-    ports:
-      - 5601:5601
-    networks:
-      - elastic
+  # elasticsearch: 
+  #   container_name: hetic-library_elasticsearch
+  #   image: elasticsearch:7.13.2
+  #   environment:
+  #     - discovery.type=single-node
+  #   ports:
+  #     - 9200:9200
+  #   networks:
+  #     - elastic
+  # kibana: 
+  #   container_name: hetic-library_kibana
+  #   image: kibana:7.13.2
+  #   environment:
+  #     - ELASTICSEARCH_URL=http://elasticsearch:9200
+  #   ports:
+  #     - 5601:5601
+  #   networks:
+  #     - elastic
 
 networks:
   elastic:

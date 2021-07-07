@@ -1,13 +1,22 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"hetic-library/router"
+)
 
 func main() {
+	setupServer().Run()
+}
+
+func setupServer() *gin.Engine {
 	r := gin.Default()
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "test",
-		})
-	})
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+
+	// TODO: insert fake data in elasticsearch
+
+	router.SetRouter(r)
+
+	r.Run(":8080")
+
+	return r
 }
