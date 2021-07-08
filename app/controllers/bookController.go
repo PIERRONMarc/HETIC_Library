@@ -52,5 +52,38 @@ func CreateBook(c *gin.Context) {
 		return
     }
 
+	c.Data(http.StatusCreated, "application/json", jsonResponse)
+}
+
+// Update a book : PUT /book/:book_id
+func UpdateBook(c *gin.Context) {
+	var input models.BookRequest
+
+	// Validation
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusMethodNotAllowed, "Invalid input")
+		return
+	}
+
+	// Update in Elasticsearch
+	book := models.HydrateBookFromRequest(input)
+	httpResponse, err := repositories.UpdateBook(book, c.Param("book_id"))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, "Internal server error")
+		return
+    } else if httpResponse.StatusCode == http.StatusNotFound {
+		c.JSON(http.StatusNotFound, "Document not found")
+		return
+	}
+
+	book.ID = c.Param("book_id")
+
+	// endpoint response
+	jsonResponse, err := json.Marshal(book)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, "Internal server error")
+		return
+    }
+
 	c.Data(http.StatusOK, "application/json", jsonResponse)
 }

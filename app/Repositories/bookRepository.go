@@ -13,3 +13,11 @@ func CreateBook(book models.Book) (*http.Response, error) {
 	response, err := http.Post(elasticsearch.GetUrlWithIndex(elasticsearch.DefaultIndex) + "/_doc", "application/json",  bytes.NewBuffer(requestBody))
 	return response, err
 }
+
+func UpdateBook(book models.Book, id string) (*http.Response, error) {
+	updateRequest := elasticsearch.UpdateRequest{Document: book}
+	requestBody, err := json.Marshal(updateRequest)
+	response, err := http.Post(elasticsearch.GetUrlWithIndex(elasticsearch.DefaultIndex) + "/_update/" + id, "application/json",  bytes.NewBuffer(requestBody))
+	return response, err
+}
+
