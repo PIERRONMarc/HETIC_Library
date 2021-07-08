@@ -1,0 +1,120 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: HETIC - Library
+components:
+  schemas:
+    Book:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        author:
+          type: string
+        abstract:
+          type: string
+paths:
+  /book:
+    post:
+      tags:
+        - Book
+      summary: Add a new book
+      requestBody:
+        description: The body containing the data to create the book
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                author:
+                  type: string
+                abstract: 
+                  type: string
+                  
+      responses:
+        201:
+          description: The book object created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: 
+                    type: string
+                  title:
+                    type: string
+                  author:
+                    type: string
+                  abstract:
+                    type: string
+        405:
+          description: Invalid input
+  /book/search:
+    get:
+      tags:
+      - Book
+      summary: Search in all books
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+  /book/{book_id}:
+    put:
+      tags:
+        - Book
+      summary: Update a book
+      parameters:
+        - in: path
+          name: book_id
+          description: Book ID
+          schema:
+            type: string
+          required: true
+      requestBody:
+        description: The body with the data to update the book
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                author:
+                  type: string
+                abstract:
+                  type: string
+      responses:
+        200:
+          description: The updated book
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        404:
+          description: Document not found
+        405:
+          description: Invalid input
+    delete:
+      tags:
+        - Book
+      summary: Delete a book
+      parameters:
+        - in: path
+          name: book_id
+          schema:
+            type: string
+          required: true
+      responses:
+        204:
+          description: Document deleted
+        404:
+          description: Document not found
