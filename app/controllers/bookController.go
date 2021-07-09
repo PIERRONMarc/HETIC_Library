@@ -89,7 +89,6 @@ func UpdateBook(c *gin.Context) {
 
 // Delete a book : DELETE /book/:book_id
 func DeleteBook(c *gin.Context) {
-
 	httpResponse, err := repositories.DeleteBook(c.Param("book_id"))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "Internal server error")
