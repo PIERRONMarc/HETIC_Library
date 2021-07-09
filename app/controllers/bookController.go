@@ -71,7 +71,7 @@ func UpdateBook(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, "Internal server error")
 		return
     } else if httpResponse.StatusCode == http.StatusNotFound {
-		c.JSON(http.StatusNotFound, "Document not found")
+		c.JSON(http.StatusNotFound, "Book not found")
 		return
 	}
 
@@ -94,7 +94,7 @@ func DeleteBook(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, "Internal server error")
 		return
     } else if httpResponse.StatusCode == http.StatusNotFound {
-		c.JSON(http.StatusNotFound, "Document not found")
+		c.JSON(http.StatusNotFound, "Book not found")
 		return
 	}
 
@@ -105,14 +105,11 @@ func DeleteBook(c *gin.Context) {
 // Delete all books: DELETE /deleteAll
 func DeleteAllBooks(c *gin.Context) {
 
-	httpResponse, err := repositories.DeleteAllBooks()
+	_, err := repositories.DeleteAllBooks()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "Internal server error")
 		return
-    } else if httpResponse.StatusCode == http.StatusNotFound {
-		c.JSON(http.StatusNotFound, "Document not found")
-		return
-	}
+    } 
 
 	c.JSON(http.StatusOK, "All books have been deleted")
 }
