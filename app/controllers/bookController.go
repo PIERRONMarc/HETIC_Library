@@ -6,14 +6,13 @@ import (
 	"hetic-library/repositories"
 	"hetic-library/services"
 	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 
 // search all books by title, author or abstract : GET /book/search
 func SearchBooks(c *gin.Context) {
 	c.JSON(200, gin.H{
-		"message": "Hello world",
+		"message": "Hello worlds",
 	})
 }
 
@@ -72,7 +71,7 @@ func UpdateBook(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, "Internal server error")
 		return
     } else if httpResponse.StatusCode == http.StatusNotFound {
-		c.JSON(http.StatusNotFound, "Document not found")
+		c.JSON(http.StatusNotFound, "Book not found")
 		return
 	}
 
@@ -86,4 +85,31 @@ func UpdateBook(c *gin.Context) {
     }
 
 	c.Data(http.StatusOK, "application/json", jsonResponse)
+}
+
+// Delete a book : DELETE /book/:book_id
+func DeleteBook(c *gin.Context) {
+	httpResponse, err := repositories.DeleteBook(c.Param("book_id"))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, "Internal server error")
+		return
+    } else if httpResponse.StatusCode == http.StatusNotFound {
+		c.JSON(http.StatusNotFound, "Book not found")
+		return
+	}
+
+
+	c.JSON(http.StatusOK, "Book deleted")
+}
+
+// Delete all books: DELETE /deleteAll
+func DeleteAllBooks(c *gin.Context) {
+
+	_, err := repositories.DeleteAllBooks()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, "Internal server error")
+		return
+    } 
+
+	c.JSON(http.StatusOK, "All books have been deleted")
 }

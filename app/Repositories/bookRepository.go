@@ -21,3 +21,24 @@ func UpdateBook(book models.Book, id string) (*http.Response, error) {
 	return response, err
 }
 
+func DeleteBook(id string) (*http.Response, error) {
+	client := &http.Client{}
+	req, err := http.NewRequest("DELETE", elasticsearch.GetUrlWithIndex(elasticsearch.DefaultIndex) + "/_doc/" + id, nil)
+    if err != nil {
+        return nil, err
+    }
+
+    return client.Do(req)
+}
+
+func DeleteAllBooks() (*http.Response, error) {
+	client := &http.Client{}
+	req, err := http.NewRequest("DELETE", elasticsearch.GetUrlWithIndex(elasticsearch.DefaultIndex), nil)
+    if err != nil {
+        return nil, err
+    }
+
+    return client.Do(req)
+}
+
+
