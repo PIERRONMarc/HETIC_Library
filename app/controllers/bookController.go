@@ -88,13 +88,9 @@ func UpdateBook(c *gin.Context) {
 	c.Data(http.StatusOK, "application/json", jsonResponse)
 }
 
-// Delete a book : PUT /book/:book_id
+// Delete a book : DELETE /book/:book_id
 func DeleteBook(c *gin.Context) {
-	var input models.BookRequest
-
-	// Delete in Elasticsearch
-	book := models.HydrateBookFromRequest(input)
-	httpResponse, err := repositories.DeleteBook(book, c.Param("book_id"))
+	httpResponse, err := repositories.DeleteBook(c.Param("book_id"))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "Internal server error")
 		return
@@ -103,16 +99,7 @@ func DeleteBook(c *gin.Context) {
 		return
 	}
 
-	book.ID = c.Param("book_id")
-
-	// endpoint response
-	jsonResponse, err := json.Marshal(book)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, "Internal server error")
-		return
-    }
-
-	c.Data(http.StatusOK, "application/json", jsonResponse)
+	c.JSON(http.StatusOK, "Document deleted")
 }
 
 func DeleteAllBooks(c *gin.Context) {
