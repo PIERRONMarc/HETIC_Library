@@ -19,6 +19,7 @@ func FindBooks(input string) (*http.Response, error) {
 	}
 
 	request, err := http.NewRequest("GET", elasticsearch.GetUrlWithIndex(elasticsearch.DefaultIndex)+"/_search", bytes.NewBuffer(requestBody))
+	request.Header.Add("Content-Type", "application/json")
 	if err != nil {
 		return nil, err
 	}

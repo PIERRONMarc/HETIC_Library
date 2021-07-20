@@ -31,7 +31,7 @@ func SearchBooks(c *gin.Context) {
 			ID:       result.ID,
 			Title:    result.Data["title"].(string),
 			Author:   result.Data["author"].(string),
-			Abstract: result.Data["abtract"].(string),
+			Abstract: result.Data["abstract"].(string),
 		})
 	}
 
@@ -42,7 +42,7 @@ func SearchBooks(c *gin.Context) {
 		return
 	}
 
-	c.Data(http.StatusCreated, "application/json", jsonResponse)
+	c.Data(http.StatusOK, "application/json", jsonResponse)
 }
 
 // Create and store a book : POST /book
