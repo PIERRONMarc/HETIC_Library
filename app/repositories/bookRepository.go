@@ -8,14 +8,17 @@ import (
 	"net/http"
 )
 
-func FindBooks(bookQuery models.BookQueryRequest) (*http.Response, error) {
+func FindBooks(input string) (*http.Response, error) {
 	client := &http.Client{}
+	var bookQuery models.BookQueryRequest
+
+	bookQuery.Query.QueryString.Query = input
 	requestBody, err := json.Marshal(bookQuery)
 	if err != nil {
 		return nil, err
 	}
 
-	request, err := http.NewRequest("GET", elasticsearch.GetUrlWithIndex(elasticsearch.DefaultIndex)+"/_search/", bytes.NewBuffer(requestBody))
+	request, err := http.NewRequest("GET", elasticsearch.GetUrlWithIndex(elasticsearch.DefaultIndex)+"/_search", bytes.NewBuffer(requestBody))
 	if err != nil {
 		return nil, err
 	}

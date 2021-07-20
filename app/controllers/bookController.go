@@ -12,36 +12,37 @@ import (
 
 // search all books by title, author or abstract : GET /book/search
 func SearchBooks(c *gin.Context) {
-	//TODO Utiliser un query param plutot
-	var input models.BookQueryRequest
-
-	// Validation
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusMethodNotAllowed, "Invalid input")
-		return
-	}
-
-	httpResponse, err := repositories.FindBooks(input)
+	search := c.Query("search")
+	httpResponse, err := repositories.FindBooks(search)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "Internal server error")
 		return
 	}
 
-	// Read body from Elasticsearch response
-	httpJsonResponse, err := services.HttpResponseToJson(httpResponse)
+	var books models.Books
+	searchResults, err := services.HttpResponseToSearchResults(httpResponse)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "Internal server error")
 		return
 	}
 
-	//var results [] := httpJsonResponse["hits"]["hits"].(array)
-	//for _, element := range results {
-	// element is the element from someSlice for where we are
-	//}
+	for _, result := range searchResults.Hits.Results {
+		books = append(books, models.Book{
+			ID:       result.ID,
+			Title:    result.Data["title"].(string),
+			Author:   result.Data["author"].(string),
+			Abstract: result.Data["abtract"].(string),
+		})
+	}
 
-	c.JSON(200, gin.H{
-		"message": "Hello worlds",
-	})
+	// endpoint response
+	jsonResponse, err := json.Marshal(books)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, "Internal server error")
+		return
+	}
+
+	c.Data(http.StatusCreated, "application/json", jsonResponse)
 }
 
 // Create and store a book : POST /book
