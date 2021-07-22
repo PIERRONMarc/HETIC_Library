@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"hetic-library/models"
 	"hetic-library/services/elasticsearch"
+	"io"
 	"net/http"
 )
 
@@ -12,18 +13,24 @@ func FindBooks(input string) (*http.Response, error) {
 	client := &http.Client{}
 	var bookQuery models.BookQueryRequest
 
-	bookQuery.Query.QueryString.Query = input
-	requestBody, err := json.Marshal(bookQuery)
+	var body io.Reader
+	if input != "" {
+		bookQuery.Query.QueryString.Query = input
+		requestBody, err := json.Marshal(bookQuery)
+		if err != nil {
+			return nil, err
+		}
+		body = bytes.NewBuffer(requestBody)
+	} else {
+		body = nil
+	}
+
+	request, err := http.NewRequest("GET", elasticsearch.GetUrlWithIndex(elasticsearch.DefaultIndex)+"/_search", body)
 	if err != nil {
 		return nil, err
 	}
 
-	request, err := http.NewRequest("GET", elasticsearch.GetUrlWithIndex(elasticsearch.DefaultIndex)+"/_search", bytes.NewBuffer(requestBody))
 	request.Header.Add("Content-Type", "application/json")
-	if err != nil {
-		return nil, err
-	}
-
 	response, err := client.Do(request)
 	return response, err
 }

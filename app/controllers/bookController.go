@@ -11,9 +11,10 @@ import (
 )
 
 // search all books by title, author or abstract : GET /book/search
+// queryParam query string
 func SearchBooks(c *gin.Context) {
-	search := c.Query("search")
-	httpResponse, err := repositories.FindBooks(search)
+	query := c.Query("query")
+	httpResponse, err := repositories.FindBooks(query)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "Internal server error")
 		return
