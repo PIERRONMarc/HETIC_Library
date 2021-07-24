@@ -6,14 +6,44 @@ import (
 	"hetic-library/repositories"
 	"hetic-library/services"
 	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
 // search all books by title, author or abstract : GET /book/search
+// queryParam query string
 func SearchBooks(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"message": "Hello worlds",
-	})
+	query := c.Query("query")
+	httpResponse, err := repositories.FindBooks(query)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, "Internal server error")
+		return
+	}
+
+	var books models.Books
+	searchResults, err := services.HttpResponseToSearchResults(httpResponse)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, "Internal server error")
+		return
+	}
+
+	for _, result := range searchResults.Hits.Results {
+		books = append(books, models.Book{
+			ID:       result.ID,
+			Title:    result.Data["title"].(string),
+			Author:   result.Data["author"].(string),
+			Abstract: result.Data["abstract"].(string),
+		})
+	}
+
+	// endpoint response
+	jsonResponse, err := json.Marshal(books)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, "Internal server error")
+		return
+	}
+
+	c.Data(http.StatusOK, "application/json", jsonResponse)
 }
 
 // Create and store a book : POST /book
@@ -33,14 +63,14 @@ func CreateBook(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "Internal server error")
 		return
-    }
+	}
 
 	// Read body from Elasticsearch response to get document ID
-	httpJsonResponse, err := services.HttpResponseToJson(httpResponse)	
+	httpJsonResponse, err := services.HttpResponseToJson(httpResponse)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "Internal server error")
 		return
-    }
+	}
 
 	book.ID = httpJsonResponse["_id"].(string)
 
@@ -49,7 +79,7 @@ func CreateBook(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "Internal server error")
 		return
-    }
+	}
 
 	c.Data(http.StatusCreated, "application/json", jsonResponse)
 }
@@ -70,7 +100,7 @@ func UpdateBook(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "Internal server error")
 		return
-    } else if httpResponse.StatusCode == http.StatusNotFound {
+	} else if httpResponse.StatusCode == http.StatusNotFound {
 		c.JSON(http.StatusNotFound, "Book not found")
 		return
 	}
@@ -82,7 +112,7 @@ func UpdateBook(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "Internal server error")
 		return
-    }
+	}
 
 	c.Data(http.StatusOK, "application/json", jsonResponse)
 }
@@ -93,11 +123,10 @@ func DeleteBook(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "Internal server error")
 		return
-    } else if httpResponse.StatusCode == http.StatusNotFound {
+	} else if httpResponse.StatusCode == http.StatusNotFound {
 		c.JSON(http.StatusNotFound, "Book not found")
 		return
 	}
-
 
 	c.JSON(http.StatusOK, "Book deleted")
 }
@@ -109,7 +138,7 @@ func DeleteAllBooks(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "Internal server error")
 		return
-    } 
+	}
 
 	c.JSON(http.StatusOK, "All books have been deleted")
 }

@@ -1,5 +1,13 @@
 package models
 
+type BookQueryRequest struct {
+	Query struct {
+		QueryString struct {
+			Query string `json:"query" binding:"required"`
+		} `json:"query_string" binding:"required"`
+	} `json:"query" binding:"required"`
+}
+
 type BookRequest struct {
 	Title    string `json:"title" binding:"required"`
 	Author   string `json:"author" binding:"required"`
@@ -13,10 +21,12 @@ type Book struct {
 	Abstract string `json:"abstract"`
 }
 
+type Books []Book
+
 func HydrateBookFromRequest(input BookRequest) Book {
 	return Book{
-		Title: input.Title,
-		Author: input.Author,
+		Title:    input.Title,
+		Author:   input.Author,
 		Abstract: input.Abstract,
 	}
 }
