@@ -2,6 +2,7 @@ package main
 
 import (
 	"hetic-library/router"
+	"hetic-library/services/elasticsearch"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,8 +13,7 @@ func main() {
 
 func setupServer() *gin.Engine {
 	r := gin.Default()
-
-	// TODO: insert fake data in elasticsearch
+	elasticsearch.LoadFakeData()
 
 	router.SetRouter(r)
 
