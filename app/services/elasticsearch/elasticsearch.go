@@ -1,5 +1,12 @@
 package elasticsearch
 
+import (
+	"bytes"
+	"io/ioutil"
+	"net/http"
+	"os"
+)
+
 const BaseUrl = "http://elasticsearch:9200"
 const DefaultIndex = "hetic-library"
 
@@ -22,4 +29,12 @@ type UpdateRequest struct {
 
 func GetUrlWithIndex(index string) string {
 	return BaseUrl + "/" + index
+}
+
+func LoadFakeData() {
+	bulkFile, _ := os.Open("data/bulk.json")
+	byteValue, _ := ioutil.ReadAll(bulkFile)
+	defer bulkFile.Close()
+
+	http.Post(GetUrlWithIndex(DefaultIndex)+"/_bulk", "application/json", bytes.NewBuffer(byteValue))
 }

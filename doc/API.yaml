@@ -65,6 +65,12 @@ paths:
       tags:
       - Book
       summary: Search in all books
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: Search string
       responses:
         200:
           description: successful operation
