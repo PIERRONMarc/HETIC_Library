@@ -21,8 +21,12 @@ PIERRON Marc, DOMART Bastien, NGUYEN Tan
 ```sh
 $ docker-compose up
 ```
+2. - App API can be reached at [http://localhost](http://localhost)
+    - Elasticsearch can be reached at [http://localhost:9200](http://localhost:9200)
+    - Kibana can be reached at [http://localhost:5601](http://localhost:5601)
 
-# API
+
+# App API
 
 API documentation can be found at [./doc/API.yaml](./doc/API.yaml) written according to the OpenAPI 3.0 specification.
 
