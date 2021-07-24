@@ -21,9 +21,10 @@ PIERRON Marc, DOMART Bastien, NGUYEN Tan
 ```sh
 $ docker-compose up
 ```
-2. - App API can be reached at [http://localhost](http://localhost)
-    - Elasticsearch can be reached at [http://localhost:9200](http://localhost:9200)
-    - Kibana can be reached at [http://localhost:5601](http://localhost:5601)
+2. Fake data automatically get loaded into Elasticsearch
+3. - access App API at [http://localhost](http://localhost)
+    - access Elasticsearch at [http://localhost:9200](http://localhost:9200)
+    - access Kibana at [http://localhost:5601](http://localhost:5601)
 
 
 # App API
